@@ -1,41 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
 
     <data>
+
         <variable
             name="viewModel"
             type="ahmed.hk.currencyconverter.ui.main.MainViewModel" />
 
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textField"
-            android:layout_width="match_parent"
+            android:id="@+id/menu_from"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/from"
+            app:layout_constraintEnd_toStartOf="@id/btn_swap"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_menu_from"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:maxLines="1"
+                dropdownMenuItems="@{viewModel.currencies}"
+                dropdownMenuListener="@{viewModel.toCurrencyListener}"
+                android:inputType="none"
+                tools:text="EGP" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/btn_swap"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:hint="Hint"
+            android:onClick="@{()->viewModel.onSwapCurrencyClicked()}"
+            android:src="@drawable/ic_swap"
+            android:layout_marginHorizontal="12dp"
+            app:layout_constraintBottom_toBottomOf="@id/menu_from"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@id/menu_to"
+            app:layout_constraintStart_toEndOf="@id/menu_from"
+            app:layout_constraintTop_toTopOf="@id/menu_from" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/menu_to"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:hint="@string/to"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_swap"
+            app:layout_constraintTop_toTopOf="@id/menu_from">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_menu_to"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:singleLine="true"
+                android:maxLines="1"
+                dropdownMenuItems="@{viewModel.currencies}"
+                dropdownMenuListener="@{viewModel.fromCurrencyListener}"
+                tools:text="USD" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ti_amount_from"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:hint="@string/amount"
             app:helperTextEnabled="true"
-            app:helperText="Helper Text"
-            android:layout_margin="10dp"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constrainedHeight="true"
-            app:layout_constraintVertical_bias="0.0"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            app:layout_constraintEnd_toEndOf="@id/menu_from"
+            app:layout_constraintStart_toStartOf="@id/menu_from"
+            app:layout_constraintTop_toBottomOf="@+id/menu_from">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="top|start"
-                android:text="@={viewModel.text}"
-                />
+                android:inputType="number"
+                android:text="@={viewModel.fromAmount}" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ti_amount_to"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:hint="@string/amount"
+            app:helperTextEnabled="true"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintEnd_toEndOf="@id/menu_to"
+            app:layout_constraintStart_toStartOf="@id/menu_to"
+            app:layout_constraintTop_toBottomOf="@+id/menu_to">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|start"
+                android:inputType="number"
+                android:text="@={viewModel.convertedAmount}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -43,7 +136,25 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.95" />
-
-
+        <ProgressBar
+            android:id="@+id/prg_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:invisibleIf="@{!viewModel.loading}"
+            app:layout_constraintBottom_toTopOf="@id/btn_details"/>
+        <Button
+            android:id="@+id/btn_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/details"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/guideline"
+            android:enabled="@{viewModel.enabled}"
+            android:onClick="@{()-> viewModel.onDetailsButtonClicked()}"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
