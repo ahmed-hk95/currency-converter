@@ -78,5 +78,19 @@ abstract class BaseViewModel : ViewModel() {
                 }
         }
     }
-
+    protected fun <T> api(
+        func: suspend CoroutineScope.()-> T,
+        loading:()-> Unit = {},
+        error:(Throwable) -> Unit = {},
+        success:(T) -> Unit = {},
+    ){
+        viewModelScope.launch {
+            try {
+                loading().also { _loading.value = true }
+                success(func()).also { _loading.value = false }
+            }catch (e:Exception){
+                error(e).also { _loading.value = false }
+            }
+        }
+    }
 }

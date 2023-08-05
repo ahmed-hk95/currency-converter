@@ -37,7 +37,7 @@ abstract class BaseFragment: Fragment() {
         viewDataBinding = DataBindingUtil.inflate(inflater,layoutId,container,false)
         with(viewDataBinding){
             setVariable(BR.viewModel,viewModel)
-            lifecycleOwner = this@BaseFragment
+            lifecycleOwner = viewLifecycleOwner
             executePendingBindings()
         }
 
