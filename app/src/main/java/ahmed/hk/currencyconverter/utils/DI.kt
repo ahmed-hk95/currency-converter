@@ -49,10 +49,13 @@ class AppModule {
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(client)
-            .addConverterFactory(Json.asConverterFactory(Constants.CONTENT_TYPE.toMediaType()))
+            .addConverterFactory(json.asConverterFactory(Constants.CONTENT_TYPE.toMediaType()))
             .build()
     }
 
@@ -148,8 +151,14 @@ class AppModule {
     @FlowPreview
     @Provides
     @Singleton
-    fun provideDataRepository(apIs: APIs): DataRepository {
-        return DataRepository(apIs)
+    fun provideDataRepository(apiInterface: ApiRepository): DataRepository {
+        return DataRepository(apiInterface)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiRepository(apIs: APIs): ApiRepository {
+        return ApiRepository(apIs)
     }
 
     @Provides
