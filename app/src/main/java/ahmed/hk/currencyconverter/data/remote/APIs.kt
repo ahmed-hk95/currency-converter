@@ -1,0 +1,5 @@
+package ahmed.hk.currencyconverter.data.remote
+
+interface APIs {
+
+}
