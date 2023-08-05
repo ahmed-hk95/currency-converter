@@ -1,20 +1,19 @@
 package ahmed.hk.currencyconverter.data.repository
 
-import ahmed.hk.currencyconverter.data.remote.APIs
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import ahmed.hk.currencyconverter.data.models.Currency
+import ahmed.hk.currencyconverter.data.remote.ApiInterface
+import ahmed.hk.currencyconverter.utils.mapToModel
 import javax.inject.Inject
 
-class DataRepository  @Inject constructor(private val apiService: APIs) : DataInterface {
-
+class DataRepository @Inject constructor(private val apiInterface: ApiInterface) : DataInterface {
+    override suspend fun getCurrencies(): List<Currency> =
+        api { apiInterface.getCurrencies().mapToModel() }
 }
 
-private fun <T> api(operation: suspend ()->T) : Flow<T>{
-    return flow {
-        try {
-            emit(operation())
-        }catch (e:Exception) {
-            throw e
-        }
+private suspend fun <T> api(operation: suspend ()->T) : T{
+    return try {
+        operation()
+    }catch (e:Exception) {
+        throw e
     }
 }

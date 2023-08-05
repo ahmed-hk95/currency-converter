@@ -1,10 +1,10 @@
 package ahmed.hk.currencyconverter.utils
 
 import ahmed.hk.currencyconverter.data.remote.APIs
+import ahmed.hk.currencyconverter.data.remote.ApiRepository
 import ahmed.hk.currencyconverter.data.repository.DataInterface
 import ahmed.hk.currencyconverter.data.repository.DataRepository
 import ahmed.hk.currencyconverter.ui.base.BaseApplication
-
 import android.content.Context
 import android.util.Log
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
