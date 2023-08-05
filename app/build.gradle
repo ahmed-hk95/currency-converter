@@ -1,0 +1,68 @@
+plugins {
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.serialization
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.hilt
+}
+
+android {
+    namespace 'ahmed.hk.currencyconverter'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "ahmed.hk.currencyconverter"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField("String", "AccessKey", "\"8c08ca999096eb8222f2963875e66892\"")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        dataBinding true
+        buildConfig = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_17
+    }
+//    kotlinOptions {
+//        jvmTarget = JavaVersion.VERSION_1_8.toString()
+//    }
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
+}
+
+dependencies {
+    implementation libs.bundles.navigation
+    implementation libs.bundles.lifecycle
+    implementation libs.bundles.room
+    implementation libs.google.material
+
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.kotlinx
+    implementation libs.okhttp3
+    implementation libs.kotlinx.serialization.json
+
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+
+    testImplementation libs.junit
+    androidTestImplementation libs.bundles.test
+
+    implementation libs.core
+    implementation libs.appCompat
+}
