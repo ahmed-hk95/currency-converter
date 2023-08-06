@@ -35,8 +35,9 @@
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:maxLines="1"
+                dropdownMenuSelection="@{viewModel.fromCurrencyPosition}"
                 dropdownMenuItems="@{viewModel.currencies}"
-                dropdownMenuListener="@{viewModel.toCurrencyListener}"
+                dropdownMenuListener="@{viewModel.fromCurrencyListener}"
                 android:inputType="none"
                 tools:text="EGP" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -73,8 +74,9 @@
                 android:inputType="none"
                 android:singleLine="true"
                 android:maxLines="1"
+                dropdownMenuSelection="@{viewModel.toCurrencyPosition}"
                 dropdownMenuItems="@{viewModel.currencies}"
-                dropdownMenuListener="@{viewModel.fromCurrencyListener}"
+                dropdownMenuListener="@{viewModel.toCurrencyListener}"
                 tools:text="USD" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,6 +120,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="top|start"
+                android:enabled="false"
                 android:inputType="number"
                 android:text="@={viewModel.convertedAmount}" />
 

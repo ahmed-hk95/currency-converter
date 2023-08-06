@@ -19,15 +19,18 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
     private val _currenciesSymbols = MutableStateFlow(emptyList<String>())
     val currencies: StateFlow<List<String>> = _currenciesSymbols
 
-    private var fromCurrency: Currency? = null
-    private var toCurrency: Currency? = null
+    private val _fromCurrencyPosition = MutableStateFlow(-1)
+    val fromCurrencyPosition:StateFlow<Int> = _fromCurrencyPosition
+
+    private val _toCurrencyPosition = MutableStateFlow(-1)
+    val toCurrencyPosition:StateFlow<Int> = _toCurrencyPosition
 
     val fromCurrencyListener: (Int) -> Unit = {
-        fromCurrency = _currencies[it]
+        _fromCurrencyPosition.value = it
         convert()
     }
     val toCurrencyListener: (Int) -> Unit = {
-        toCurrency = _currencies[it]
+        _toCurrencyPosition.value = it
         convert()
     }
     val fromAmount = MutableStateFlow("1")
@@ -36,7 +39,11 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
     val convertedAmount = _convertedAmount
 
     fun onSwapCurrencyClicked() {
-
+        val fromValue = fromCurrencyPosition.value
+        val toValue = toCurrencyPosition.value
+        _fromCurrencyPosition.value = toValue
+        _toCurrencyPosition.value = fromValue
+        convert()
     }
 
     fun onDetailsButtonClicked() {
@@ -58,22 +65,14 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
             }
 
         }
-        viewModelScope.launch {
-            convertedAmount.collect {
-                convert(it.toDoubleOrNull(), isReversed = true)
-            }
-        }
     }
 
 
-    private fun convert(amount: Double? = fromAmount.value.toDoubleOrNull(),isReversed:Boolean = false) {
-        val from = if (isReversed) toCurrency else fromCurrency
-        val to = if (isReversed) fromCurrency else toCurrency
+    private fun convert(amount: Double? = fromAmount.value.toDoubleOrNull()) {
+        val from = _currencies.getOrNull(fromCurrencyPosition.value)
+        val to = _currencies.getOrNull(toCurrencyPosition.value)
         if (from == null || to == null || amount == null) return
-        val result = (from.value * amount / to.value).toString()
-        if (isReversed)
-            fromAmount.value = result
-        else
-            _convertedAmount.value = result
+        val result = (to.value * amount / from.value).toString()
+        _convertedAmount.value = result
     }
 }
